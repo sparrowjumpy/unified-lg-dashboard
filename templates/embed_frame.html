@@ -1,0 +1,18 @@
+<div class="provider-shell">
+  <div class="provider-toolbar">
+    <div class="provider-title">{{ name }}</div>
+    <div class="spacer"></div>
+    <a class="btn" href="{{ upstream_url }}" target="_blank" rel="noopener">Open original</a>
+    <button class="btn" onclick="(function(){ const pid='{{ pid }}'; fetch('/embed/frame/'+pid,{cache:'no-store'}).then(r=>r.text()).then(html=>{ document.getElementById('panel').innerHTML=html; }); })()">Reload</button>
+  </div>
+
+  <div class="frame-wrap">
+    <iframe
+      class="frame"
+      src="{{ prox_url }}"
+      loading="eager"
+      referrerpolicy="no-referrer"
+      sandbox="allow-forms allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+    ></iframe>
+  </div>
+</div>
