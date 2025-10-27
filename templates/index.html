@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Unified Looking Glass Dashboard (Cybernet NOC)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+</head>
+<body class="theme-dark">
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="brand">
+      <img class="brand-logo" src="{{ url_for('static', filename='images/cybernet_logo.png') }}" alt="Cybernet">
+      <div class="brand-text">
+        <h1>Unified Looking Glass (Cybernet NOC)</h1>
+        <span class="sub">Browse one provider at a time</span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <span class="ts">{{ now.strftime('%Y-%m-%d %H:%M UTC') }}</span>
+    </div>
+  </header>
+
+  <main class="app-main">
+    <!-- Sidebar -->
+    <nav class="sidebar" aria-label="Providers">
+      <div class="sidebar-title">Providers</div>
+      <ul id="providerList">
+        {% for pid, p in providers.items() %}
+        <li>
+          <button class="nav-item" data-pid="{{ pid }}">
+            <span class="name">{{ p.name }}</span>
+          </button>
+        </li>
+        {% endfor %}
+      </ul>
+    </nav>
+
+    <!-- Content -->
+    <section class="content">
+      <div id="panel">
+        <div class="empty">
+          <p>Select a provider on the left to load its Looking Glass.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const list = document.getElementById('providerList');
+    const panel = document.getElementById('panel');
+
+    async function loadProvider(pid) {
+      // Visual state
+      document.querySelectorAll('.nav-item.active').forEach(b => b.classList.remove('active'));
+      const btn = document.querySelector(`.nav-item[data-pid="${pid}"]`);
+      if (btn) btn.classList.add('active');
+
+      panel.innerHTML = `<div class="loading">Loading ${btn?.innerText || ''}…</div>`;
+      try {
+        const res = await fetch(`/embed/frame/${pid}`, {cache: "no-store"});
+        const html = await res.text();
+        panel.innerHTML = html;
+      } catch (e) {
+        panel.innerHTML = `<div class="error">Failed to load provider. ${e}</div>`;
+      }
+    }
+
+    list.addEventListener('click', (ev) => {
+      const b = ev.target.closest('.nav-item');
+      if (!b) return;
+      loadProvider(b.dataset.pid);
+    });
+
+    // Auto-load the first provider for convenience:
+    const first = document.querySelector('.nav-item');
+    if (first) loadProvider(first.dataset.pid);
+  </script>
+</body>
+</html>
