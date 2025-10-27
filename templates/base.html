@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en" class="h-full">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Unified LG Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="h-full bg-neutral-900 text-neutral-100">
+    <nav class="bg-neutral-950/70 backdrop-blur sticky top-0 z-50">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+        <div class="text-lg font-semibold">Unified Looking Glass Dashboard</div>
+        <div class="text-xs text-neutral-400">Load exactly one provider at a time</div>
+      </div>
+    </nav>
+    <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
+      {% block content %}{% endblock %}
+    </main>
+  </body>
+</html>
